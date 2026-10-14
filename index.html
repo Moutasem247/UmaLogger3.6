@@ -768,12 +768,36 @@ function submitMessage() {
             link.click();
         }
 
+async function exportToPNG() {
+            const container = document.getElementById('previewContainer');
+            const style = document.createElement('style');
+            style.innerHTML = `
+                .message-actions { display: none !important; }
+                .white-card-wrapper { height: auto !important; flex: none !important; }
+                .chat-body { overflow: visible !important; }
+            `;
+            document.head.appendChild(style);
+
+            const canvas = await html2canvas(container, { scale: 2, useCORS: true, backgroundColor: '#f9f9f9' });
+            
+            document.head.removeChild(style);
+
+            const link = document.createElement('a');
+            link.download = 'ChatLog.png';
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        }
+
         async function exportToPDF() {
             const { jsPDF } = window.jspdf;
             const container = document.getElementById('previewContainer');
             
             const style = document.createElement('style');
-            style.innerHTML = ".message-actions { display: none !important; }";
+            style.innerHTML = `
+                .message-actions { display: none !important; }
+                .white-card-wrapper { height: auto !important; flex: none !important; }
+                .chat-body { overflow: visible !important; }
+            `;
             document.head.appendChild(style);
 
             const canvas = await html2canvas(container, { scale: 2, useCORS: true, backgroundColor: '#f9f9f9' });
@@ -791,7 +815,7 @@ function submitMessage() {
             pdf.save('ChatLog.pdf');
         }
 
-function exportJSON() {
+	function exportJSON() {
             const projectData = {
                 eventName: document.getElementById('eventNameInput').value,
                 eventImage: document.getElementById('eventImagePreview').getAttribute('src'),
